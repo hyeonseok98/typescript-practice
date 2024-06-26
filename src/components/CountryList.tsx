@@ -6,6 +6,8 @@ import CountryCard from "./CountryCard";
 function CountryList() {
   const [countryList, setCountryList] = useState<Country[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<Country[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getCountryData = async () => {
@@ -16,16 +18,19 @@ function CountryList() {
           id: index,
         }));
         setCountryList(idAddedData);
+        setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.message);
+          setError(error.message);
+          setLoading(false);
         }
       }
     };
     getCountryData();
   }, []);
 
-  const handleAddFavortieCountry = (favoriteCountry: Country) => {
+  const handleAddFavoriteCountry = (favoriteCountry: Country) => {
     setSelectedCountry((prevList) => [...prevList, favoriteCountry]);
 
     setCountryList(
@@ -35,7 +40,7 @@ function CountryList() {
     );
   };
 
-  const handleRemoveFavortieCountry = (favoriteCountry: Country) => {
+  const handleRemoveFavoriteCountry = (favoriteCountry: Country) => {
     setCountryList((prevList) => {
       const newList = [...prevList, favoriteCountry];
       return newList.sort((a, b) => a.id - b.id);
@@ -48,6 +53,16 @@ function CountryList() {
     );
   };
 
+  if (loading) {
+    return <div className="text-xl font-semibold">로딩중입니다...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-xl font-semibold">에러가 발생했습니다: {error}</div>
+    );
+  }
+
   return (
     <main className="flex flex-col justify-start items-center h-screen ">
       <section className="w-5/6 mx-auto p-6">
@@ -59,7 +74,7 @@ function CountryList() {
             <CountryCard
               key={index}
               country={country}
-              onClick={() => handleRemoveFavortieCountry(country)}
+              onClick={() => handleRemoveFavoriteCountry(country)}
               isActive={true}
             />
           ))}
@@ -71,7 +86,7 @@ function CountryList() {
             <CountryCard
               key={index}
               country={country}
-              onClick={() => handleAddFavortieCountry(country)}
+              onClick={() => handleAddFavoriteCountry(country)}
             />
           ))}
         </div>
