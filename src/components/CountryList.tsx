@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react";
 import { countryApi } from "../api/country.api";
+import { Country } from "../types/country.type";
 import CountryCard from "./CountryCard";
-
-type Country = {
-  name: {
-    common: string;
-  };
-  capital: string[];
-  flags: {
-    png: string;
-  };
-  id: number;
-};
 
 function CountryList() {
   const [countryList, setCountryList] = useState<Country[]>([]);
@@ -27,8 +17,9 @@ function CountryList() {
         }));
         setCountryList(idAddedData);
       } catch (error) {
-        const typedError = error as Error;
-        console.error(typedError.message);
+        if (error instanceof Error) {
+          console.error(error.message);
+        }
       }
     };
     getCountryData();
@@ -46,10 +37,10 @@ function CountryList() {
 
   const handleRemoveFavortieCountry = (favoriteCountry: Country) => {
     setCountryList((prevList) => {
-      const newList = [...prevList];
-      newList.splice(favoriteCountry.id, 0, favoriteCountry);
-      return newList;
+      const newList = [...prevList, favoriteCountry];
+      return newList.sort((a, b) => a.id - b.id);
     });
+
     setSelectedCountry(
       selectedCountry.filter(
         (chosenCountry) => chosenCountry.id !== favoriteCountry.id
@@ -60,9 +51,9 @@ function CountryList() {
   return (
     <main className="flex flex-col justify-start items-center h-screen ">
       <section className="w-5/6 mx-auto p-6">
-        <div className="text-2xl font-bold text-center mt-12 my-6">
+        <h1 className="text-2xl font-bold text-center mt-12 my-6">
           Favorite Countries
-        </div>
+        </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {selectedCountry.map((country, index) => (
             <CountryCard
@@ -74,7 +65,7 @@ function CountryList() {
           ))}
         </div>
 
-        <div className="text-2xl font-bold text-center my-6">Countries</div>
+        <h2 className="text-2xl font-bold text-center my-6">Countries</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {countryList.map((country, index) => (
             <CountryCard

@@ -1,12 +1,4 @@
-interface Country {
-  name: {
-    common: string;
-  };
-  capital: string[];
-  flags: {
-    png: string;
-  };
-}
+import { Country } from "../types/country.type";
 
 interface CountryProps {
   country: Country;
