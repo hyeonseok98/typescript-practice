@@ -18,13 +18,13 @@ function CountryList() {
           id: index,
         }));
         setCountryList(idAddedData);
-        setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.message);
           setError(error.message);
-          setLoading(false);
         }
+      } finally {
+        setLoading(false);
       }
     };
     getCountryData();
@@ -70,9 +70,9 @@ function CountryList() {
           Favorite Countries
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {selectedCountry.map((country, index) => (
+          {selectedCountry.map((country) => (
             <CountryCard
-              key={index}
+              key={country.id}
               country={country}
               onClick={() => handleRemoveFavoriteCountry(country)}
               isActive={true}
@@ -82,9 +82,9 @@ function CountryList() {
 
         <h2 className="text-2xl font-bold text-center my-6">Countries</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {countryList.map((country, index) => (
+          {countryList.map((country) => (
             <CountryCard
-              key={index}
+              key={country.id}
               country={country}
               onClick={() => handleAddFavoriteCountry(country)}
             />
